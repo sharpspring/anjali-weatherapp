@@ -1,0 +1,71 @@
+{% macro deploy(mem_limit="100Mi", cpu_limit="100m") %}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: php
+  namespace: {{ namespace }}
+  labels:
+    role: php
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: php
+  template:
+    metadata:
+      labels:
+        role: php
+    spec:
+{% if cluster == "staging" %}
+      # The following "affinity" and "tolerations" blocks exist to schedule this
+      # container onto the "leaky" staging server. The "leaky" server has egress
+      # and ingress access to the public Internet. By default we want to
+      # restrict things running on the staging cluster to NOT have Internet
+      # access. This is because we don't want to accidentally send emails to
+      # customers, charge credit cards, etc. If you DO need Internet access, and
+      # are willing to assume the risk that that entails, then use this
+      # Deployment which has the appropriate affinity and toleration.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: leaky
+                operator: In
+                values:
+                - "true"
+      tolerations:
+      - effect: NoSchedule
+        key: leaky
+        operator: Equal
+        value: "true"
+{% endif %}
+      containers:
+      - name: php
+        image: us.gcr.io/sharpspring-us/anjali-weatherapp:{{ diff_id }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9000
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "{{ cpu_limit }}"
+            memory: "{{ mem_limit }}"
+          limits:
+            cpu: "{{ cpu_limit }}"
+            memory: "{{ mem_limit }}"
+{% endmacro %}
+{% if cluster == "staging" %}
+# Give staging smaller resources than production.
+{%- set mem_limit="100Mi" %}
+{%- set cpu_limit="100m" %}
+{% else %}
+# Give not-staging (e.g. production) more resources.
+{%- set mem_limit="1Gi" %}
+{%- set cpu_limit="1" %}
+{% endif %}
+# We created a macro that will output the above
+{{ deploy(mem_limit=mem_limit, cpu_limit=cpu_limit) }}
+# vim:ft=ansible:
