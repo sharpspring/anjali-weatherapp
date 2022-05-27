@@ -26,7 +26,7 @@ node("k8s") {
             withRepoKey {
                 k8s_contexts.each { cluster ->
                     template(cluster: cluster)
-                    sh("make CLUSTER=staging template && kubectl --context ${cluster} apply -f ./tmp-k8s")
+                    sh("kubectl --context ${cluster} apply -f ./tmp-k8s")
                 }
             }
         }
