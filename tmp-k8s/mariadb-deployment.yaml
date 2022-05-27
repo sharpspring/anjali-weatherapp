@@ -1,0 +1,71 @@
+# Give staging smaller resources than production.# We created a macro that will output the above
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: anjali-training
+  labels:
+    role: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: mariadb
+  template:
+    metadata:
+      labels:
+        role: mariadb
+    spec:
+      volumes:
+      - name: mariadb-data-volume
+        persistentVolumeClaim:
+          claimName: mariadb-data
+      # The following "affinity" and "tolerations" blocks exist to schedule this
+      # container onto the "leaky" staging server. The "leaky" server has egress
+      # and ingress access to the public Internet. By default we want to
+      # restrict things running on the staging cluster to NOT have Internet
+      # access. This is because we don't want to accidentally send emails to
+      # customers, charge credit cards, etc. If you DO need Internet access, and
+      # are willing to assume the risk that that entails, then use this
+      # Deployment which has the appropriate affinity and toleration.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: leaky
+                operator: In
+                values:
+                - "true"
+      tolerations:
+      - effect: NoSchedule
+        key: leaky
+        operator: Equal
+        value: "true"
+      containers:
+      - name: mariadb
+        image: mariadb:10.3
+        imagePullPolicy: Always
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mysql_root_password
+        ports:
+        - containerPort: 3306
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - name: mariadb-data-volume
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "250m"
+            memory: "512Mi"
+
+# vim:ft=ansible:
