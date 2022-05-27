@@ -13,7 +13,7 @@ node("k8s") {
         sh("make release")
     }
 
-    if (env.BRANCH_NAME.equals("master")) {
+    if (env.BRANCH_NAME.equals("main")) {
         stage("Deploy") {
             k8s_contexts = [
                 "staging",
@@ -26,7 +26,7 @@ node("k8s") {
             withRepoKey {
                 k8s_contexts.each { cluster ->
                     template(cluster: cluster)
-                    sh("kubectl --context ${cluster} apply -f ./tmp-k8s")
+                    sh("make CLUSTER=staging template && kubectl --context ${cluster} apply -f ./tmp-k8s")
                 }
             }
         }
