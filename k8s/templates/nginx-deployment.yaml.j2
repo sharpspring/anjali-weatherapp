@@ -1,6 +1,6 @@
 {% macro deploy(mem_limit="100Mi", cpu_limit="100m") %}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx

@@ -1,6 +1,6 @@
 {% macro deploy(mem_limit="100Mi", cpu_limit="100m") %}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mariadb
@@ -19,8 +19,8 @@ spec:
     spec:
       volumes:
       - name: mariadb-data-volume
-      persistentVolumeClaim:
-        claimName: mariadb-data
+        persistentVolumeClaim:
+          claimName: mariadb-data
 {% if cluster == "staging" %}
       # The following "affinity" and "tolerations" blocks exist to schedule this
       # container onto the "leaky" staging server. The "leaky" server has egress
