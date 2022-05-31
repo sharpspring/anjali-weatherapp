@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb
+  name: php
   namespace: anjali-training
   labels:
-    role: mariadb
+    role: php
 spec:
   selector:
-    role: mariadb
+    role: php
   ports:
-  - port: 3306
-    name: mysql
+  - port: 9000
+    name: php
     protocol: TCP
-    targetPort: 3306
+    targetPort: 9000
