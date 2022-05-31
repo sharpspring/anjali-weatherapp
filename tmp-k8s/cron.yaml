@@ -22,7 +22,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: php
-            image: us.gcr.io/sharpspring-us/anjali-weatherapp:191f655
+            image: us.gcr.io/sharpspring-us/anjali-weatherapp:5a889fe
             command:
             - php
             args:

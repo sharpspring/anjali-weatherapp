@@ -19,8 +19,9 @@ spec:
     spec:
       volumes:
       - name: mariadb-data-volume
-        persistentVolumeClaim:
-          claimName: mariadb-data
+        gcePersistentDisk:
+          pdName: anjali-weatherapp-mariadb-data
+          fsType: ext4
       containers:
       - name: mariadb
         image: mariadb:10.3
