@@ -22,6 +22,8 @@ spec:
         gcePersistentDisk:
           pdName: anjali-weatherapp-mariadb-data-us-east
           fsType: ext4
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: us-east1-b:
       containers:
       - name: mariadb
         image: mariadb:10.3
