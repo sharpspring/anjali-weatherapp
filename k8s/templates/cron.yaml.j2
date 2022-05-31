@@ -7,7 +7,7 @@ spec:
   # `Forbid`: Don't create a new job; just let the old one keep going (Only one job at a time)
   # `Replace`: Delete the old job first, then make the new job (Only one job at a time)
   # `Allow`: Just keep making more jobs (Possibly many jobs at any given time!)
-  concurrencyPolicy: Forbid
+  concurrencyPolicy: Replace
 
   # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/
   startingDeadlineSeconds: 300

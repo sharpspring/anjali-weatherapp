@@ -1,8 +1,8 @@
 <?php
 // A single-page PHP script which displays a short list of famous authors.
 
-define('MYSQL_USERNAME', 'app');
-define('MYSQL_PASSWORD', 'tprecmpjncgchkicmy');
+define('MYSQL_USERNAME', 'root');
+define('MYSQL_PASSWORD', 'admin');
 
 function connectToDB() {
     return new PDO('mysql:host=mariadb;dbname=authors_db', MYSQL_USERNAME, MYSQL_PASSWORD);
