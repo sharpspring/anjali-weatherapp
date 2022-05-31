@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: php
-        image: us.gcr.io/sharpspring-us/anjali-weatherapp:5a889fe
+        image: us.gcr.io/sharpspring-us/anjali-weatherapp:ffcd282
         imagePullPolicy: Always
         ports:
         - containerPort: 9000
