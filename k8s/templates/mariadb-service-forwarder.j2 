@@ -4,7 +4,7 @@ kind: Service
 metadata:
   annotations:
     sharpspring.com/service-forwarder: '{"context":"datastores-us-central1","namespace":"anjali-training","service":"mariadb"}'
-  name: marias
+  name: mariadb
   namespace: {{ namespace }}
   labels:
     role: mariadb
