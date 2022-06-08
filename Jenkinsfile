@@ -29,7 +29,7 @@ node("k8s") {
                         basedir: "${env.WORKSPACE}/${cluster}",
                         cluster: cluster
                     )
-                    sh("ls ./tmp-k8s")
+                    // sh("ls ./tmp-k8s")
                     sh("sleep infinity")
                     // sh("kubectl --context ${cluster} apply -f ./tmp-k8s/")
                 }
