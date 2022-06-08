@@ -40,9 +40,7 @@ node("k8s") {
         stage("Deploy") {
             k8s_contexts = [
                 "staging",
-                "datastores-us-central1"
             ]
-            def packages = sh(returnStdout: true, script: "lerna la --since ${baseHash} --ignore api --json | jq -r '.[].name'").trim().split('\n')
             // getKubeconfig() is needed to get authentication to the k8s clusters
             getKubeconfig()
             // withRepoKey is needed in order to decrypt ecfg-encrypted secrets.
@@ -50,12 +48,8 @@ node("k8s") {
             // anything to include it anyway.
             withRepoKey {
                 k8s_contexts.each { cluster ->
-                    def dir = sh(returnStdout: true, script: "pwd")
-                    template(
-                        basedir: "${env.WORKSPACE}/templates/${cluster}",
-                        cluster: cluster
-                    )
-                    sh("kubectl --context ${cluster} apply -f ./tmp-k8s/")
+                    template(cluster: cluster)
+                    sh("kubectl --context ${cluster} apply -f ./tmp-k8s")
                 }
             }
         }
