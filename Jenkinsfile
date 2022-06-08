@@ -18,7 +18,6 @@ node("k8s") {
                 "staging",
                 "datastores-us-central1"
             ]
-            def packages = sh(returnStdout: true, script: "lerna la --since ${baseHash} --ignore api --json | jq -r '.[].name'").trim().split('\n')
             // getKubeconfig() is needed to get authentication to the k8s clusters
             getKubeconfig()
             // withRepoKey is needed in order to decrypt ecfg-encrypted secrets.
