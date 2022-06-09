@@ -11,7 +11,7 @@ image=$(base):$(shorthash)
 # template is target which can be used to test Jinja templating locally.
 # It requires that you have the ansible repo cloned at ~/dev/ansible.
 # This target is not used by Jenkins!
-template=ANSIBLE_HASH_BEHAVIOUR=merge ANSIBLE_JINJA2_EXTENSIONS=jinja2.ext.do ANSIBLE_ACTION_PLUGINS=~/dev/ansible/plugins/actions ansible-playbook -e "cluster=${CLUSTER} basedir=${CURDIR}" -e "diff_id=`git rev-parse --short HEAD`" -i /dev/null ~/dev/ansible/playbooks/template.yaml
+template=ANSIBLE_HASH_BEHAVIOUR=merge ANSIBLE_JINJA2_EXTENSIONS=jinja2.ext.do ANSIBLE_ACTION_PLUGINS=~/dev/ansible/plugins/actions ansible-playbook -e "cluster=${CLUSTER} basedir=${CURDIR}/staging" -e "diff_id=`git rev-parse --short HEAD`" -i /dev/null /Volumes/dev/ansible/playbooks/template.yaml
 
 all: build release
 
