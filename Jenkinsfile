@@ -13,7 +13,8 @@ node("k8s") {
         sh("make release")
     }
 
-    stage("Deploy") {
+    if (!env.BRANCH_NAME.equals("main")) {
+        stage("Deploy") {
             k8s_contexts = [
                 "staging",
                 "datastores-us-central1"
@@ -29,10 +30,10 @@ node("k8s") {
                         basedir: "${env.WORKSPACE}/${cluster}",
                         cluster: cluster
                     )
-                    sh("ls ${env.WORKSPACE}/${cluster}/tmp-k8s/")
-                    // sh("kubectl --context ${cluster} apply -f ${env.WORKSPACE}/${cluster}/tmp-k8s/")
+                    sh("ls ${env.WORKSPACE}/${cluster}/tmp-k8s/")                 
                 }
             }
+        }
     }
 
     if (env.BRANCH_NAME.equals("main")) {
