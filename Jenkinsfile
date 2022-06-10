@@ -47,8 +47,16 @@ node("k8s") {
             // anything to include it anyway.
             withRepoKey {
                 k8s_contexts.each { cluster ->
-                    template(cluster: cluster)
-                    sh("kubectl --context ${cluster} apply -f ./tmp-k8s")
+                    template(
+                        basedir: "${env.WORKSPACE}/${cluster}",
+                        cluster: cluster
+                    )
+                    // sh("ls ./tmp-k8s")
+                    sh("sleep infinity")
+                    // sh("kubectl --context ${cluster} apply -f ./tmp-k8s/")
+                    sh("ls ${env.WORKSPACE}/${cluster}/tmp-k8s/")
+                    // sh("kubectl --context ${cluster} apply -f ${env.WORKSPACE}/${cluster}/tmp-k8s/")
+                 
                 }
             }
         }
