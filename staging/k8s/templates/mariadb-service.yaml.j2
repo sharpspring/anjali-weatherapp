@@ -8,11 +8,3 @@ metadata:
   namespace: {{ namespace }}
   labels:
     role: mariadb
-spec:
-  selector:
-    role: mariadb
-  ports:
-  - port: 3306
-    name: mysql
-    protocol: TCP
-    targetPort: 3306
