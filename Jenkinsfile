@@ -30,16 +30,17 @@ node("k8s") {
                         basedir: "${env.WORKSPACE}/${cluster}",
                         cluster: cluster
                     )
-                    sh("ls ${env.WORKSPACE}/${cluster}/tmp-k8s/")                 
+                    sh("ls ${env.WORKSPACE}/${cluster}/tmp-k8s/")                   
                 }
             }
         }
     }
-
-    if (env.BRANCH_NAME.equals("main")) {
+    if (env.BRANCH_NAME.equals("main")){   
+    
         stage("Deploy") {
             k8s_contexts = [
                 "staging",
+                "datastores-us-central1"
             ]
             // getKubeconfig() is needed to get authentication to the k8s clusters
             getKubeconfig()
@@ -48,10 +49,15 @@ node("k8s") {
             // anything to include it anyway.
             withRepoKey {
                 k8s_contexts.each { cluster ->
-                    template(cluster: cluster)
-                    sh("kubectl --context ${cluster} apply -f ./tmp-k8s")
+                    template(
+                        basedir: "${env.WORKSPACE}/${cluster}",
+                        cluster: cluster
+                    )
+                    sh("kubectl --context ${cluster} apply -f ${env.WORKSPACE}/${cluster}/tmp-k8s")
                 }
             }
         }
     }
 }
+
+                
