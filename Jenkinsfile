@@ -40,6 +40,7 @@ node("k8s") {
         stage("Deploy") {
             k8s_contexts = [
                 "staging",
+                "datastores-us-central1"
             ]
             // getKubeconfig() is needed to get authentication to the k8s clusters
             getKubeconfig()
