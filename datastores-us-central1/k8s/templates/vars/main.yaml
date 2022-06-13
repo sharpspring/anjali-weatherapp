@@ -1,0 +1,7 @@
+---
+namespace: anjali-training
+_public_key: c06c703ce133865d57ccbe38857b53ac44ff086f0f8f02caff29730cc1bb7414
+secrets:
+  mariadb-secret:
+    all-clusters:
+      mysql_root_password: "admin"
