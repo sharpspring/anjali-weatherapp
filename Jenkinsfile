@@ -13,9 +13,13 @@ node("k8s") {
         sh("make release")
     }
 
-    if (!env.BRANCH_NAME.equals("main")) {
+    if (env.BRANCH_NAME.equals("main")) {
         stage("Deploy") {
             k8s_contexts = [
+                "cst2",
+                "cst3",
+                "cst4",
+                "global",
                 "staging",
                 "datastores-us-central1"
             ]
@@ -26,32 +30,41 @@ node("k8s") {
             // anything to include it anyway.
             withRepoKey {
                 k8s_contexts.each { cluster ->
-                    template(
-                        basedir: "${env.WORKSPACE}/${cluster}",
-                        cluster: cluster
-                    )
-                    sh("ls ${env.WORKSPACE}/${cluster}/tmp-k8s/")                 
+                    template(cluster: cluster)
+                    sh("kubectl --context ${cluster} apply -f ./tmp-k8s")                 
                 }
             }
         }
     }
 
-    if (env.BRANCH_NAME.equals("main")) {
-        stage("Deploy") {
-            k8s_contexts = [
-                "staging",
-            ]
+    else if (env.BRANCH_NAME.equals("staging")) {
+        //stage("Deploy") {
+          //  k8s_contexts = [
+            //    "staging",
+            //]
             // getKubeconfig() is needed to get authentication to the k8s clusters
             getKubeconfig()
             // withRepoKey is needed in order to decrypt ecfg-encrypted secrets.
             // If you don't have secrets, you don't need this. But it wont break
             // anything to include it anyway.
             withRepoKey {
-                k8s_contexts.each { cluster ->
-                    template(cluster: cluster)
+                stage("Deploy to staging namespaces [canary]") {
+                ["cst2", "cst3", "cst4"].each {cluster->
+                    template(namespace: "staging", cluster: cluster)
+                    sh("kubectl --context ${cluster} apply -f ./tmp-k8s")
+                }
+            }
+            stage("Deploy to staging cluster [cst666]") {
+                ["staging"].each {cluster->
+                    template(namespace: "default", cluster: cluster)
+                    // The staging cluster mirrors the prod cluster. Above, "default" namespace is used because this is the intended namespace in prod
+                    // and, thus, the "default" namespace will also be used on the staging cluster.
+                    // If you are working on a repo that deploys to imapsync, email, forms etc. you would use that here instead of default
                     sh("kubectl --context ${cluster} apply -f ./tmp-k8s")
                 }
             }
         }
     }
 }
+
+                
