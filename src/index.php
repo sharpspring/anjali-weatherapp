@@ -5,19 +5,19 @@ define('MYSQL_USERNAME', 'root');
 define('MYSQL_PASSWORD', 'admin');
 
 function connectToDB() {
-    return new PDO('mysql:host=mariadb;dbname=authors_db', MYSQL_USERNAME, MYSQL_PASSWORD);
+    return new PDO('mysql:host=mariadb;dbname=weatherapp', MYSQL_USERNAME, MYSQL_PASSWORD);
 }
 
 function getAuthors() {
     $pdo = connectToDB();
-    $stmt = $pdo->query('select author_name as name from authors');
+    $stmt = $pdo->query('select * from location;');
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 ?>
 <html>
     <head>
-        <title>A Short List of Famous Authors</title>
+        <title>A Weather App</title>
     </head>
     <body>
         <table border="1">
@@ -27,7 +27,7 @@ function getAuthors() {
 <?php
 foreach (getAuthors() as $author => $authors) {
     echo "<tr>\n";
-    echo "    <td>$authors[name]</td>\n";
+    echo "    <td>$authors[city_name]</td>\n";
     echo "</tr>\n";
 }
 ?>
